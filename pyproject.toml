@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "julianprbot"
+version = "0.1.0"
+description = ""
+authors = ["Ilya <nestyreff@ya.ru>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+aiogram = {url = "https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip"}
+SQLAlchemy = "^1.4.39"
+asyncpg = "^0.25.0"
+greenlet = "^1.1.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
