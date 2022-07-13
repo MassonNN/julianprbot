@@ -10,6 +10,7 @@ aiogram = {url = "https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.
 SQLAlchemy = "^1.4.39"
 asyncpg = "^0.25.0"
 greenlet = "^1.1.2"
+alembic = "^1.8.0"
 
 [tool.poetry.dev-dependencies]
 

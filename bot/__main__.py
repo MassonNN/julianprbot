@@ -5,11 +5,10 @@ from aiogram import Dispatcher, Bot
 from aiogram.types import BotCommand
 from sqlalchemy.engine import URL
 
-from bot.db import create_async_engine, get_session_maker, proceed_schemas
+from bot.db import create_async_engine, get_session_maker
 from bot.middlewares.register_check import RegisterCheck
 from bot.commands import register_user_commands
 from bot.commands.bot_commands import bot_commands
-from bot.db.base import BaseModel
 
 
 async def main() -> None:
@@ -38,7 +37,8 @@ async def main() -> None:
 
     async_engine = create_async_engine(postgres_url)
     session_maker = get_session_maker(async_engine)
-    await proceed_schemas(async_engine, BaseModel.metadata)
+    # Делегировано alembic
+    # await proceed_schemas(async_engine, BaseModel.metadata)
     await dp.start_polling(bot, session_maker=session_maker)
 
 
