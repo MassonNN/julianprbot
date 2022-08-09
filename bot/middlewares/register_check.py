@@ -31,7 +31,7 @@ class RegisterCheck(BaseMiddleware):
         # Получаем менеджер сессий из ключевых аргументов, переданных в start_polling()
         session_maker: sessionmaker = data['session_maker']
 
-        # добавляем синхронный контекст
+        # добавляем асинхронный контекст
         async with session_maker() as session:
 
             # в синхронном режиме запускаем работу с сессией

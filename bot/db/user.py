@@ -1,23 +1,37 @@
-import datetime
-from sqlalchemy import Column, Integer, VARCHAR, DATE
+"""
+    Модель пользователя
+"""
+from sqlalchemy import Column, Integer, VARCHAR, select  # type: ignore
+from sqlalchemy.engine import ScalarResult, Row
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import sessionmaker, relationship  # type: ignore
 
-from .base import BaseModel
+from .base import Base, Model  # type: ignore
+from .post import Post
 
 
-class User(BaseModel):
+class User(Base, Model):
+    """
+        Класс пользователя
+    """
     __tablename__ = 'users'
 
     # Telegram user id
     user_id = Column(Integer, unique=True, nullable=False, primary_key=True)
-
-    # Telegram user name
     username = Column(VARCHAR(32), unique=False, nullable=True)
+    # User баланс (in EUR)
+    balance = Column(Integer, default=0)
 
-    # Registration date
-    reg_date = Column(DATE, default=datetime.date.today())
+    @property
+    def stats(self) -> str:
+        """
 
-    # Last update date
-    upd_date = Column(DATE, onupdate=datetime.date.today())
+        :return:
+        """
+        return ""
 
     def __str__(self) -> str:
         return f"<User:{self.user_id}>"
+
+    def __repr__(self):
+        return self.__str__()

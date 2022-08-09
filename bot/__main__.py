@@ -1,9 +1,13 @@
+"""
+    Файл запуска
+"""
 import os
 import asyncio
 import logging
 from aiogram import Dispatcher, Bot
+from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL  # type: ignore
 
 from bot.db import create_async_engine, get_session_maker
 from bot.middlewares.register_check import RegisterCheck
@@ -12,18 +16,22 @@ from bot.commands.bot_commands import bot_commands
 
 
 async def main() -> None:
+    """
+    функция входа
+    """
     logging.basicConfig(level=logging.DEBUG)
 
     commands_for_bot = []
     for cmd in bot_commands:
         commands_for_bot.append(BotCommand(command=cmd[0], description=cmd[1]))
 
-    dp = Dispatcher()
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
 
     dp.message.middleware(RegisterCheck())
     dp.callback_query.middleware(RegisterCheck())
 
-    bot = Bot(token=os.getenv('token'))
+    bot = Bot(token=os.getenv('token'))  # type: ignore
     await bot.set_my_commands(commands=commands_for_bot)
     register_user_commands(dp)
 

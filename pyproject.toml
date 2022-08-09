@@ -11,6 +11,7 @@ SQLAlchemy = "^1.4.39"
 asyncpg = "^0.25.0"
 greenlet = "^1.1.2"
 alembic = "^1.8.0"
+mypy = "^0.971"
 
 [tool.poetry.dev-dependencies]
 
