@@ -15,9 +15,9 @@ class PRType(enum.Enum):
     """
         Типы раскрутки
     """
-    NONE = 0  # не установлен
-    CLICKS = 1  # переходы по ссылке
-    PUBLICATIONS = 2  # публикации
+    NONE = 0            # не установлен
+    CLICKS = 1          # переходы по ссылке
+    PUBLICATIONS = 2    # публикации
 
 
 class Post(Base, Model):

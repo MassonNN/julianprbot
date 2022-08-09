@@ -1,10 +1,13 @@
+"""
+    Файл хендлеров, связанных с командой /start
+"""
 from aiogram import types
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.state import StatesGroup, State
 from aiogram.utils.keyboard import (
     ReplyKeyboardBuilder, InlineKeyboardBuilder
 )
-from sqlalchemy import select
+from sqlalchemy import select  # type: ignore
 from sqlalchemy.orm import sessionmaker  # type: ignore
 
 from bot.db import User
@@ -216,7 +219,6 @@ async def menu_posts_get(message: types.Message) -> None:
     :param message:
     """
     pass
-
 
 
 async def menu_channels(message: types.Message) -> None:

@@ -2,12 +2,9 @@
     Модель пользователя
 """
 from sqlalchemy import Column, Integer, VARCHAR, select  # type: ignore
-from sqlalchemy.engine import ScalarResult, Row
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker, relationship  # type: ignore
 
 from .base import Base, Model  # type: ignore
-from .post import Post
 
 
 class User(Base, Model):
