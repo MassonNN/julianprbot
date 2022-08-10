@@ -2,6 +2,7 @@ import datetime
 from sqlalchemy import Column, Integer, VARCHAR, DATE, ForeignKey
 from sqlalchemy.orm import relationship
 
+from .post_channel import PostChannel
 from .base import Base, Model
 
 
@@ -14,7 +15,7 @@ class Channel(Base, Model):
     admin_id = Column(Integer, ForeignKey('users.user_id'))
     admin = relationship('User', backref="channels")
 
-    publicated_posts = relationship('Post', secondary='PostChannel', back_populates="channels")
+    publicated_posts = relationship('Post', secondary=PostChannel, backref="channels")
 
     # Cтатистика
     subs_count = Column(Integer, nullable=False)

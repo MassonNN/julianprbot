@@ -7,6 +7,7 @@ from sqlalchemy import Column, Integer, ForeignKey, Enum, VARCHAR  # type: ignor
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.orm import relationship  # type: ignore
 
+from .post_channel import PostChannel
 from bot.db.base import Base, Model, CleanModel
 from bot.db.types.url import URLType
 
@@ -33,37 +34,11 @@ class Post(Base, Model):
     url_price = Column(Integer, nullable=False, default=0)
     subs_min = Column(Integer, nullable=False, default=0)
 
-    user_id = Column(Integer, ForeignKey('users.user_id'))
-    author = relationship('User', backref="posts")
+    author_id = Column(Integer, ForeignKey('users.user_id'))
+    author = relationship('User', backref="posts", innerjoin=True, lazy=False)
 
     # Каналы, на которых он был опубликован
-    # publicated_channel = relationship('Channel', secondary='PostChannel', back_populates="posts")
-
-    def __init__(
-            self,
-            text: str,
-            budget: int,
-            pr_type: PRType,
-            user_id: int,
-            pub_price: float = 0.0,
-            url_price: float = 0.0,
-            subs_min: int = 0
-    ):
-        """
-        :param text:
-        :param budget:
-        :param pr_type:
-        :param user_id:
-        :param pub_price:
-        :param url_price:
-        """
-        self.text = text
-        self.budget = budget
-        self.pr_type = pr_type
-        self.user_id = user_id
-        self.pub_price = pub_price
-        self.url_price = url_price
-        self.subs_min = subs_min
+    publicated_channel = relationship('Channel', secondary=PostChannel, backref="posts")
 
     @property
     def stats(self) -> str:
@@ -75,14 +50,3 @@ class Post(Base, Model):
 
     def __str__(self) -> str:
         return f"<User:{self.user_id}>"
-
-    def __repr__(self):
-        return self.__str__()
-
-
-class PostChannel(Base, CleanModel):
-    """Таблица ассоциаций"""
-    __tablename__ = 'post_channels'
-
-    post = Column(Integer, ForeignKey('Post.id'), primary_key=True)
-    channel = Column(Integer, ForeignKey('Channel.id'), primary_key=True)

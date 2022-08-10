@@ -1,19 +1,21 @@
 """
     Файл хендлеров, связанных с командой /start
 """
+
 from aiogram import types
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.state import StatesGroup, State
 from aiogram.utils.keyboard import (
-    ReplyKeyboardBuilder, InlineKeyboardBuilder
+    ReplyKeyboardBuilder
 )
 from sqlalchemy import select  # type: ignore
-from sqlalchemy.orm import sessionmaker  # type: ignore
+from sqlalchemy.engine import ScalarResult
+from sqlalchemy.orm import sessionmaker, joinedload  # type: ignore
 
 from bot.db import User
 from bot.db.post import PRType, Post
 from bot.db.url import URL
-from bot.commands.structures import cancel_board, URL_CHECK  # type: ignore
+from bot.structures.keyboards import CANCEL_BOARD
 
 
 async def start(message: types.Message) -> None:
@@ -50,16 +52,17 @@ async def menu_posts(message: types.Message, session_maker: sessionmaker, state:
     :param session_maker:
     """
     async with session_maker() as session:
-        posts_keyboard = InlineKeyboardBuilder()
-        result = await session.execute(select(User).where(User.user_id == message.from_user.id))
-        user = result.scalars().one_or_none()
-        for post in user.posts:
-            posts_keyboard.button(text=post.text[:20], callback_data=str(post.id))
-        posts_keyboard.button(text='Создать пост', callback_data='createpost')
-        posts_keyboard.adjust(1)
-        await message.answer('Твои посты', reply_markup=posts_keyboard.as_markup())
-        await state.set_state(PostStates.waiting_for_select)
-        await session.commit()
+        async with session.begin():
+            result = await session.execute(
+                select(User)
+                .options(joinedload(User.posts))
+                .filter(User.user_id == message.from_user.id)  # type: ignore
+            )
+            user = result.unique().scalars().one()
+            print(user)
+            print(user.posts)
+            # await message.answer('Твои посты', reply_markup=generate_posts_board(posts=user.posts))
+            # await state.set_state(PostStates.waiting_for_select)
 
 
 async def menu_posts_create(message: types.Message, state: FSMContext) -> None:
@@ -69,7 +72,7 @@ async def menu_posts_create(message: types.Message, state: FSMContext) -> None:
     :param message:
     """
     await state.set_state(PostStates.waiting_for_text)
-    await message.answer('Отправь текст нового поста', reply_markup=cancel_board())
+    await message.answer('Отправь текст нового поста', reply_markup=CANCEL_BOARD)
 
 
 async def menu_posts_create_text(message: types.Message, state: FSMContext) -> None:
@@ -83,7 +86,7 @@ async def menu_posts_create_text(message: types.Message, state: FSMContext) -> N
         return await start(message)
     await state.update_data(post_text=message.text)
     await state.set_state(PostStates.waiting_for_url)
-    await message.answer('Хорошо! Теперь отправь мне ссылку, которая будет под постом.', reply_markup=cancel_board())
+    await message.answer('Хорошо! Теперь отправь мне ссылку, которая будет под постом.', reply_markup=CANCEL_BOARD)
 
 
 async def menu_posts_create_url(message: types.Message, state: FSMContext) -> None:
@@ -108,7 +111,7 @@ async def menu_posts_create_url(message: types.Message, state: FSMContext) -> No
             reply_markup=rkm_builder.as_markup(resize_keyboard=True)
         )
     else:
-        await message.answer('Отправь мне ссылку, которая будет под постом.', reply_markup=cancel_board())
+        await message.answer('Отправь мне ссылку, которая будет под постом.', reply_markup=CANCEL_BOARD)
 
 
 async def menu_posts_create_prtype(message: types.Message, state: FSMContext):

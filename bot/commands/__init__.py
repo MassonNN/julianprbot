@@ -5,7 +5,6 @@ from aiogram import Router
 from aiogram.dispatcher.filters import Command, ContentTypesFilter
 from aiogram.dispatcher.filters.command import CommandStart
 
-from bot.commands.callback_data_factories import TestCallbackData
 from bot.commands.help import help_command, help_func, call_help_func
 from bot.commands.start import (
     start,
@@ -23,6 +22,7 @@ from bot.commands.start import (
     PostStates
 )
 from bot.middlewares.register_check import RegisterCheck
+from bot.structures.callback_data_factories import PostCallbackData
 
 
 def register_user_commands(router: Router) -> None:
@@ -37,7 +37,7 @@ def register_user_commands(router: Router) -> None:
     router.message.register(menu_account, F.text == 'Аккаунт')
     router.message.register(menu_channels, F.text == 'Твои каналы')
     router.message.register(menu_posts_create, F.data == 'createpost', PostStates.waiting_for_select)
-    router.message.register(menu_posts_get, F.data.startswith('getpost'), PostStates.waiting_for_select)
+    router.message.register(menu_posts_get, PostCallbackData.filter(), PostStates.waiting_for_select)
     router.message.register(menu_posts_create_text, PostStates.waiting_for_text)
     router.message.register(menu_posts_create_subs_min, PostStates.waiting_for_post_subs_min)
     router.message.register(menu_posts_create_prtype_url, PostStates.waiting_for_price_url)
