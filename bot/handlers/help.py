@@ -4,7 +4,7 @@
 from aiogram import types
 from aiogram.dispatcher.filters import CommandObject
 
-from bot.commands.bot_commands import bot_commands
+from bot.handlers.bot_commands import bot_commands
 
 
 async def help_command(message: types.Message, command: CommandObject):

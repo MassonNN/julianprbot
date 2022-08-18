@@ -7,7 +7,8 @@ __all__ = [
     "create_async_engine",
     "get_session_maker",
     "proceed_schemas",
-    "Base"
+    "Base",
+    "PRType"
 ]
 
 from .engine import create_async_engine, get_session_maker, proceed_schemas

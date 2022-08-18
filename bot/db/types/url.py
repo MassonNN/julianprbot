@@ -37,10 +37,7 @@ class URLType(types.TypeDecorator):
         :param dialect:
         :return:
         """
-        if URL_EXP.match(value) is not None:
-            return self.prefix + value
-        else:
-            raise URLTypeError('Неправильная ссылка')
+        return value
 
     def process_result_value(self, value, dialect):
         """
@@ -49,7 +46,7 @@ class URLType(types.TypeDecorator):
         :param dialect:
         :return:
         """
-        return value[len(self.prefix):]
+        return value
 
     def copy(self, **kw):
         """

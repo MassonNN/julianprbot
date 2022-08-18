@@ -6,6 +6,6 @@ from .base import CleanModel, Base
 PostChannel = Table(
     "post_channels",
     Base.metadata,
-    Column("post", ForeignKey("posts.id")),
-    Column("channel", ForeignKey("channels.id")),
+    Column("post", ForeignKey("posts.id"), primary_key=True),
+    Column("channel", ForeignKey("channels.id"), primary_key=True),
 )

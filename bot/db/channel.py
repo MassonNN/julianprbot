@@ -14,13 +14,10 @@ class Channel(Base, Model):
 
     admin_id = Column(Integer, ForeignKey('users.user_id'))
     admin = relationship('User', backref="channels")
-
-    publicated_posts = relationship('Post', secondary=PostChannel, backref="channels")
-
+    posts = relationship('Post', secondary=PostChannel, backref="channels")
     # Cтатистика
     subs_count = Column(Integer, nullable=False)
 
-    # posts - relationship
 
     def __str__(self) -> str:
         return f"<User:{self.user_id}>"

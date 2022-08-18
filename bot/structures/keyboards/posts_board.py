@@ -3,13 +3,11 @@
 """
 from typing import List
 
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.db.post import Post
-from bot.structures.callback_data_factories import PostCallbackData
-
-CREATE_NEW_POST = InlineKeyboardButton(text='Создать пост', callback_data='createpost')
+from bot.structures.callback_data_factories import PostCD, PostCDAction
 
 
 def generate_posts_board(posts: List[Post]) -> InlineKeyboardMarkup:
@@ -21,9 +19,8 @@ def generate_posts_board(posts: List[Post]) -> InlineKeyboardMarkup:
 
     builder = InlineKeyboardBuilder()
     for post in posts:
-        builder.button(text=post.text[:20], callback_data=PostCallbackData(post_id=post.id))
-    builder.add(CREATE_NEW_POST)
+        builder.button(text=post.text[:20], callback_data=PostCD(action=PostCDAction.GET, post_id=post.id).pack())
+    builder.button(text='Создать пост', callback_data=PostCD(action=PostCDAction.CREATE).pack())
     builder.adjust(1)
 
     return builder.as_markup()
-

@@ -1,0 +1,21 @@
+version: '3.10'
+services:
+    bot:
+        image: massonnn/julianprbot:latest
+        restart: always
+        stop_signal: SIGINT
+        environment:
+            - token
+            - db_user
+            - db_name
+            - db_port
+        depends_on:
+            - db
+    db:
+        image: postgres:latest
+        restart: always
+        environment:
+            db_user: ${db_user}
+            db_name: ${db_name}
+        volumes:
+            - "/path/to/your/postgres/directory:/var/lib/postgresql/data"

@@ -1,8 +1,11 @@
 """
     Ссылка в посте
 """
+from typing import Any
+
 from sqlalchemy import Column, Integer, ForeignKey  # type: ignore
-from sqlalchemy.orm import relationship  # type: ignore
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import relationship, sessionmaker  # type: ignore
 
 from .base import Base, Model  # type: ignore
 from .types.url import URLType  # type: ignore
@@ -11,18 +14,12 @@ from .types.url import URLType  # type: ignore
 class URL(Base, Model):
     """Ссылка"""
     __tablename__ = 'urls'
-
-    # ID поста
-    url = Column(URLType, unique=True, nullable=False, primary_key=True)
-
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    url = Column(URLType, nullable=False)
     post_id = Column(Integer, ForeignKey('posts.id'))
-    post = relationship('Post', backref="urls")
-
+    post = relationship('Post', backref="urls", lazy=False)
     # Cтатистика
     clicks_count = Column(Integer, default=0)
-
-    def __init__(self, url: str):
-        self.url = url
 
     @property
     def stats(self) -> str:
@@ -37,3 +34,20 @@ class URL(Base, Model):
 
     def __repr__(self):
         return self.__str__()
+
+
+async def create_url(session_maker: sessionmaker, url_text: str, post: "Post"):
+    """
+    Создать URL
+    :param session_maker:
+    :param url_text:
+    :param post:
+    :return:
+    """
+    async with session_maker() as session:
+        async with session.begin():
+            session: AsyncSession
+            post.urls.append(URL(
+                url = url_text,
+                post_id = post.id
+            ))
