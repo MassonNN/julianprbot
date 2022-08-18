@@ -31,7 +31,7 @@ class RegisterCheck(BaseMiddleware):
         # Получаем менеджер сессий из ключевых аргументов, переданных в start_polling()
         session_maker: sessionmaker = data['session_maker']
 
-        # добавляем асинхронный контекст
+        # добавляем синхронный контекст
         async with session_maker() as session:
 
             # в синхронном режиме запускаем работу с сессией
@@ -41,7 +41,7 @@ class RegisterCheck(BaseMiddleware):
                 result = await session.execute(select(User).where(User.user_id == event.from_user.id))
 
                 # получаем и обрабатываем пользователя
-                user: User = result.scalars().unique().one_or_none()
+                user: User = result.scalars().one_or_none()
 
                 if user is not None:
                     # значит пользователь уже зарегистрирован
@@ -55,8 +55,8 @@ class RegisterCheck(BaseMiddleware):
                         username=event.from_user.username
                     )
 
-                    # добавляем его в сессию
-                    session.add(user)
+                    # "мержим" его в сессию
+                    await session.merge(user)
 
                     if isinstance(event, Message):
                         await event.answer('Ты успешно зарегистрирован(а)!')
