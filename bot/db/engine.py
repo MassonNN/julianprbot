@@ -1,11 +1,13 @@
 """
     Функции для работы с базой данных
 """
+import os
 from typing import Union
-from sqlalchemy import MetaData  # type: ignore
-from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine  # type: ignore
-from sqlalchemy.engine import URL  # type: ignore
+
 import sqlalchemy.ext.asyncio  # type: ignore
+from sqlalchemy import MetaData  # type: ignore
+from sqlalchemy.engine import URL  # type: ignore
+from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine  # type: ignore
 from sqlalchemy.orm import sessionmaker  # type: ignore
 
 
@@ -15,10 +17,9 @@ def create_async_engine(url: Union[URL, str]) -> sqlalchemy.ext.asyncio.AsyncEng
     :param url:
     :return:
     """
-    return _create_async_engine(url=url, echo=True, encoding='utf-8', pool_pre_ping=True)
+    return _create_async_engine(url=url, echo=bool(os.getenv('debug')), encoding='utf-8', pool_pre_ping=True)
 
 
-@DeprecationWarning
 async def proceed_schemas(engine: sqlalchemy.ext.asyncio.AsyncEngine, metadata: MetaData) -> None:
     """
 

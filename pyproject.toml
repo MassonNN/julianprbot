@@ -6,7 +6,7 @@ authors = ["Ilya <nestyreff@ya.ru>"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-aiogram = {url = "https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip"}
+aiogram = { url = "https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip" }
 SQLAlchemy = "^1.4.39"
 asyncpg = "^0.25.0"
 greenlet = "^1.1.2"
@@ -16,6 +16,9 @@ pytest = "^7.1.2"
 python-dotenv = "^0.20.0"
 aioredis = "^2.0.1"
 redis = "^4.3.4"
+pytest-alembic = "^0.8.4"
+pytest-mock-resources = { extras = ["postgres"], version = "^2.4.4" }
+pytest-asyncio = "^0.19.0"
 
 [tool.poetry.dev-dependencies]
 

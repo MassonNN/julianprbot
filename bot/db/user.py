@@ -1,10 +1,13 @@
 """
     Модель пользователя
 """
+
 from sqlalchemy import Column, Integer, VARCHAR, select, BigInteger  # type: ignore
+from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import sessionmaker, relationship, selectinload  # type: ignore
 
 from .base import Base, Model  # type: ignore
+from ..misc import redis
 
 
 class User(Base, Model):
@@ -46,7 +49,33 @@ async def get_user(user_id: int, session_maker: sessionmaker) -> User:
         async with session.begin():
             result = await session.execute(
                 select(User)
-                .options(selectinload(User.posts))
-                .filter(User.user_id == user_id)  # type: ignore
+                    .options(selectinload(User.posts))
+                    .filter(User.user_id == user_id)  # type: ignore
             )
             return result.scalars().one()
+
+
+async def create_user(user_id: int, username: str, session_maker: sessionmaker) -> None:
+    async with session_maker() as session:
+        async with session.begin():
+            user = User(
+                user_id=user_id,
+                username=username
+            )
+            try:
+                session.add(user)
+            except ProgrammingError as e:
+                # TODO: add log
+                pass
+
+
+async def is_user_exists(user_id: int, session_maker: sessionmaker) -> bool:
+    res = await redis.get(name='is_user_exists:' + str(user_id))
+    if not res:
+        async with session_maker() as session:
+            async with session.begin():
+                sql_res = await session.execute(select(User).where(User.user_id == user_id))
+                await redis.set(name='is_user_exists:' + str(user_id), value=1 if sql_res else 0)
+                return bool(sql_res)
+    else:
+        return bool(res)

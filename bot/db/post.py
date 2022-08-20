@@ -4,7 +4,7 @@
 import enum
 import logging
 
-from sqlalchemy import Column, Integer, ForeignKey, Enum, VARCHAR  # type: ignore
+from sqlalchemy import Column, Integer, ForeignKey, Enum, VARCHAR, select  # type: ignore
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -102,3 +102,7 @@ async def create_post(
                 return post
 
 
+async def get_post(post_id: int, session_maker: sessionmaker) -> Post:
+    async with session_maker() as session:
+        async with session.begin():
+            return (await session.execute(select(Post).where(Post.id == post_id))).scalars().unique().one_or_none()

@@ -5,15 +5,15 @@ Revises: e0cca1fdbba3
 Create Date: 2022-08-18 11:44:24.534045
 
 """
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
 import bot
 
 revision = '342baa79f745'
-down_revision = 'e0cca1fdbba3'
+down_revision = None
 branch_labels = None
 depends_on = None
 
