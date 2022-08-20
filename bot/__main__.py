@@ -1,21 +1,21 @@
 """
     Файл запуска
 """
-import os
 import asyncio
 import logging
+import os
 import pathlib
 
 from aiogram import Dispatcher, Bot
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
-from aioredis import Redis
 from sqlalchemy.engine import URL  # type: ignore
 
 from bot.db import create_async_engine, get_session_maker
-from bot.middlewares.register_check import RegisterCheck
 from bot.handlers import register_user_commands
 from bot.handlers.bot_commands import bot_commands
+from bot.middlewares.register_check import RegisterCheck
+from bot.misc import redis
 
 
 async def bot_start(logger: logging.Logger) -> None:
@@ -26,13 +26,11 @@ async def bot_start(logger: logging.Logger) -> None:
     for cmd in bot_commands:
         commands_for_bot.append(BotCommand(command=cmd[0], description=cmd[1]))
 
-    storage = RedisStorage(redis=Redis())
-    dp = Dispatcher(storage=storage)
-
+    dp = Dispatcher(storage=RedisStorage(redis=redis))
     dp.message.middleware(RegisterCheck())
     dp.callback_query.middleware(RegisterCheck())
 
-    bot = Bot(token=os.getenv('token'))  # type: ignore
+    bot = Bot(token=os.getenv('token'), parse_mode='HTML')  # type: ignore
     await bot.set_my_commands(commands=commands_for_bot)
     register_user_commands(dp)
 
@@ -46,9 +44,10 @@ async def bot_start(logger: logging.Logger) -> None:
 
     async_engine = create_async_engine(postgres_url)
     session_maker = get_session_maker(async_engine)
+
     # Делегировано alembic
     # await proceed_schemas(async_engine, BaseModel.metadata)
-    await dp.start_polling(bot, session_maker=session_maker, logger=logger)
+    await dp.start_polling(bot, session_maker=session_maker, logger=logger, redis=redis)
 
 
 def setup_env():

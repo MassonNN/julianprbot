@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram import Router
 from aiogram.dispatcher.filters import Command
 from aiogram.dispatcher.filters.command import CommandStart
+from aiogram.dispatcher.fsm.state import any_state
 
 from bot.handlers.create_post import menu_posts_create, menu_posts_create_text, menu_posts_create_url, \
     menu_posts_create_prtype, menu_posts_create_prtype_url, menu_posts_create_prtype_pub, menu_posts_create_subs_min
@@ -12,12 +13,11 @@ from bot.handlers.start import (
     menu_posts,
     menu_account,
     menu_channels,
-    PostStates
+    PostStates, call_start
 )
 from bot.structures.callback_data_factories import PostCD, PostCDAction
 
-
-__all__ = ('register_user_commands', 'bot_commands', )
+__all__ = ('register_user_commands', 'bot_commands', 'register_user_handlers',)
 
 
 def register_user_commands(router: Router) -> None:
@@ -40,7 +40,8 @@ def register_user_commands(router: Router) -> None:
                             PostStates.waiting_for_url)
     router.message.register(help_func, F.text == 'Помощь')
 
-    router.callback_query.register(call_help_func, F.data == 'help')
+    router.callback_query.register(call_help_func, F.data == 'help', any_state)
+    router.callback_query.register(call_start, F.data == 'menu', any_state)
     router.callback_query.register(menu_posts_create,
                                    PostCD.filter(F.action == PostCDAction.CREATE), PostStates.waiting_for_select)
     router.callback_query.register(menu_posts_get,

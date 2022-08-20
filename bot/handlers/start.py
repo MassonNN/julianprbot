@@ -5,6 +5,7 @@ from contextlib import suppress
 
 from aiogram import types
 from aiogram.dispatcher.fsm.context import FSMContext
+from aiogram.types import Message
 from sqlalchemy import select  # type: ignore
 from sqlalchemy.orm import sessionmaker, joinedload, selectinload  # type: ignore
 
@@ -14,24 +15,24 @@ from bot.structures.keyboards import MENU_BOARD
 from bot.structures.keyboards.posts_board import generate_posts_board
 
 
-async def start(message: types.Message) -> None:
+async def start(message: types.Message) -> Message:
     """
     Хендлер для команды /start
     :param message:
     """
-    await message.answer('Меню', reply_markup=MENU_BOARD)
+    return await message.answer('Меню', reply_markup=MENU_BOARD)
 
 
-async def call_start(call: types.CallbackQuery, state: FSMContext) -> None:
+async def call_start(call: types.CallbackQuery, state: FSMContext) -> Message:
     """
     Хендлер для команды /start
     :param call:
     :param state:
     """
     await state.clear()
-    await call.message.answer('Меню', reply_markup=MENU_BOARD)
     with suppress(Exception):
         await call.message.delete()
+    return await call.message.answer('Меню', reply_markup=MENU_BOARD)
 
 
 async def menu_posts(message: types.Message, session_maker: sessionmaker, state: FSMContext) -> None:
