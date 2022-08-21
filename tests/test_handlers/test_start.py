@@ -30,3 +30,17 @@ async def test_start_callback_handler(storage, bot):
 
     call.message.delete.assert_any_call()
     call.message.answer.assert_called_with('Меню', reply_markup=MENU_BOARD)
+
+
+@pytest.mark.asyncio
+async def test_menu_posts(session_maker, bot, storage):
+    # message = AsyncMock()
+    # state = FSMContext(
+    #     bot=bot, storage=storage,
+    #     key=StorageKey(user_id=TEST_USER.id, bot_id=bot.id, chat_id=TEST_USER_CHAT.id)
+    # )
+    # await menu_posts(message=message, session_maker=session_maker, state=state)
+    #
+    # assert await state.get_state() == PostStates.waiting_for_select
+    # assert 'Твои посты' in message.answer.call_args
+    ...  # TODO: fix

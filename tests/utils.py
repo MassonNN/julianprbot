@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from aiogram.dispatcher.filters.callback_data import CallbackData
 from aiogram.types import User, Chat, Message, CallbackQuery, Update
+from alembic.command import upgrade, downgrade
 
 TEST_USER = User(id=123, is_bot=False, first_name='Test', last_name='Bot', username='testbot', language_code='ru-RU',
                  is_premium=True, added_to_attachment_menu=None, can_join_groups=None,
@@ -32,16 +34,21 @@ def get_message(text: str):
                    web_app_data=None, reply_markup=None)
 
 
-def get_update(message: Message = None, call: CallbackQuery = None):
+def get_callback_query(data: str | CallbackData):
+    return CallbackQuery(id='test', from_user=TEST_USER, chat_instance='test', message=get_message('test'),
+                         inline_message_id=None, data=data, game_short_name=None)
+
+
+def get_update(message: Message = None, callback_query: CallbackQuery = None):
     return Update(
         update_id=187,
-        message=message if message else None,
+        message=message or None,
         edited_message=None,
         channel_post=None,
         edited_channel_post=None,
         inline_query=None,
         chosen_inline_result=None,
-        callback_query=call if call else None,
+        callback_query=callback_query or None,
         shipping_query=None,
         pre_checkout_query=None,
         poll=None,
@@ -50,3 +57,14 @@ def get_update(message: Message = None, call: CallbackQuery = None):
         chat_member=None,
         chat_join_request=None
     )
+
+
+def setup_database(revisions: list, alembic_config):
+    for revision in revisions:
+        upgrade(alembic_config, revision.revision)
+
+
+def clear_database(revisions: list, alembic_config):
+    revisions.reverse()
+    for revision in revisions:
+        downgrade(alembic_config, revision.revision or '-1')
