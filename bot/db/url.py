@@ -1,7 +1,6 @@
 """
     Ссылка в посте
 """
-from typing import Any
 
 from sqlalchemy import Column, Integer, ForeignKey  # type: ignore
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,7 +35,7 @@ class URL(Base, Model):
         return self.__str__()
 
 
-async def create_url(session_maker: sessionmaker, url_text: str, post: "Post"):
+async def create_url(session_maker: sessionmaker, url_text: str, post: Base):
     """
     Создать URL
     :param session_maker:
