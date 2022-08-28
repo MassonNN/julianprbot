@@ -7,7 +7,7 @@ authors = ["Ilya <nestyreff@ya.ru>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 aiogram = { url = "https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip" }
-SQLAlchemy = "^1.4.39"
+SQLAlchemy = { extras = ["mypy"], version = "^1.4.40" }
 asyncpg = "^0.25.0"
 greenlet = "^1.1.2"
 alembic = "^1.8.0"

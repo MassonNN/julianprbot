@@ -1,12 +1,14 @@
 """
     Файл запуска
 """
+#  Copyright (c) 2022.
+
 import asyncio
 import logging
 import os
 import pathlib
 
-from aiogram import Dispatcher, Bot
+from aiogram import Dispatcher, Bot, Router
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
 from sqlalchemy.engine import URL  # type: ignore
@@ -29,6 +31,9 @@ async def bot_start(logger: logging.Logger) -> None:
     dp = Dispatcher(storage=RedisStorage(redis=redis))
     dp.message.middleware(RegisterCheck())
     dp.callback_query.middleware(RegisterCheck())
+
+    router = Router()
+    dp.update.bind_filter()
 
     bot = Bot(token=os.getenv('token'), parse_mode='HTML')  # type: ignore
     await bot.set_my_commands(commands=commands_for_bot)

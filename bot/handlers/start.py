@@ -1,6 +1,8 @@
 """
     Файл хендлеров, связанных с командой /start
 """
+#  Copyright (c) 2022.
+
 from contextlib import suppress
 
 from aiogram import types

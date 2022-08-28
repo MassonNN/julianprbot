@@ -1,10 +1,13 @@
+#  Copyright (c) 2022.
+
 from unittest.mock import AsyncMock
 
 import pytest
 from aiogram.dispatcher.fsm.context import FSMContext
 from aiogram.dispatcher.fsm.storage.base import StorageKey
 
-from bot.handlers.start import start, call_start
+from bot.handlers.start import start, call_start, menu_posts
+from bot.structures.fsm_groups import PostStates
 from bot.structures.keyboards import MENU_BOARD
 from utils import TEST_USER, TEST_USER_CHAT
 
@@ -34,13 +37,12 @@ async def test_start_callback_handler(storage, bot):
 
 @pytest.mark.asyncio
 async def test_menu_posts(session_maker, bot, storage):
-    # message = AsyncMock()
-    # state = FSMContext(
-    #     bot=bot, storage=storage,
-    #     key=StorageKey(user_id=TEST_USER.id, bot_id=bot.id, chat_id=TEST_USER_CHAT.id)
-    # )
-    # await menu_posts(message=message, session_maker=session_maker, state=state)
-    #
-    # assert await state.get_state() == PostStates.waiting_for_select
-    # assert 'Твои посты' in message.answer.call_args
-    ...  # TODO: fix
+    message = AsyncMock()
+    state = FSMContext(
+        bot=bot, storage=storage,
+        key=StorageKey(user_id=TEST_USER.id, bot_id=bot.id, chat_id=TEST_USER_CHAT.id)
+    )
+    await menu_posts(message=message, session_maker=session_maker, state=state)
+
+    assert await state.get_state() == PostStates.waiting_for_select
+    assert 'Твои посты' in message.answer.call_args

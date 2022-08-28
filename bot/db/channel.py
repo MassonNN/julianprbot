@@ -1,9 +1,10 @@
-import datetime
-from sqlalchemy import Column, Integer, VARCHAR, DATE, ForeignKey
+#  Copyright (c) 2022.
+
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
-from .post_channel import PostChannel
 from .base import Base, Model
+from .post_channel import PostChannel
 
 
 class Channel(Base, Model):

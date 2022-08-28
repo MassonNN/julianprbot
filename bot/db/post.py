@@ -1,14 +1,17 @@
 """
     Пост
 """
+#  Copyright (c) 2022.
+
 import enum
 import logging
+from typing import TYPE_CHECKING, TypeVar
 
 from sqlalchemy import Column, Integer, ForeignKey, Enum, VARCHAR, select  # type: ignore
 from sqlalchemy.dialects.mysql import TEXT
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import relationship, sessionmaker, Session  # type: ignore
+from sqlalchemy.orm import relationship, sessionmaker, Session, RelationshipProperty  # type: ignore
 
 from .base import Base, Model
 from .post_channel import PostChannel
@@ -25,6 +28,9 @@ class PRType(enum.Enum):
 
 
 class Post(Base, Model):
+    if TYPE_CHECKING:
+        User = TypeVar('User')
+
     """Модель поста"""
     __tablename__ = 'posts'
 

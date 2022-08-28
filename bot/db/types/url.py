@@ -1,15 +1,10 @@
 """
     Для работы с URL
 """
-import re
-from abc import ABC
+
+#  Copyright (c) 2022.
 
 import sqlalchemy.types as types
-
-
-URL_EXP = re.compile(
-    'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)'
-)
 
 
 class URLTypeError(Exception):
