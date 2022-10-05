@@ -1,13 +1,14 @@
 """
     Модель пользователя
 """
+#  Copyright (c) 2022.
 
+from aioredis import Redis
 from sqlalchemy import Column, Integer, VARCHAR, select, BigInteger  # type: ignore
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import sessionmaker, relationship, selectinload  # type: ignore
 
 from .base import Base, Model  # type: ignore
-from ..misc import redis
 
 
 class User(Base, Model):
@@ -69,7 +70,7 @@ async def create_user(user_id: int, username: str, session_maker: sessionmaker) 
                 pass
 
 
-async def is_user_exists(user_id: int, session_maker: sessionmaker) -> bool:
+async def is_user_exists(user_id: int, session_maker: sessionmaker, redis: Redis) -> bool:
     res = await redis.get(name='is_user_exists:' + str(user_id))
     if not res:
         async with session_maker() as session:

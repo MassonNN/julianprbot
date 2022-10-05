@@ -43,9 +43,11 @@ class Post(Base, Model):
     url_price = Column(Integer, nullable=False, default=0)
     subs_min = Column(Integer, nullable=False, default=0)
     author_id = Column(Integer, ForeignKey('users.user_id'))
+    # noinspection PyTypeChecker
     author = relationship('User', back_populates="posts", lazy=False)
 
     # Каналы, на которых он был опубликован
+    # noinspection PyTypeChecker
     publicated_channel = relationship('Channel', secondary=PostChannel, back_populates="posts", lazy=False)
 
     @property

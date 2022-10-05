@@ -19,6 +19,7 @@ redis = "^4.3.4"
 pytest-alembic = "^0.8.4"
 pytest-mock-resources = { extras = ["postgres"], version = "^2.4.4" }
 pytest-asyncio = "^0.19.0"
+Babel = "^2.10.3"
 
 [tool.poetry.dev-dependencies]
 

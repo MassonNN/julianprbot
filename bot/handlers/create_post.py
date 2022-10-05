@@ -1,3 +1,5 @@
+#  Copyright (c) 2022.
+
 from aiogram import types
 from aiogram.dispatcher.fsm.context import FSMContext
 from sqlalchemy.orm import sessionmaker
@@ -20,7 +22,7 @@ async def menu_posts_create(call: types.CallbackQuery, state: FSMContext) -> Non
     await call.message.answer('Отправь текст нового поста', reply_markup=CANCEL_BOARD)
 
 
-async def menu_posts_create_text(message: types.Message, state: FSMContext) -> None:
+async def menu_posts_create_text(message: types.Message, state: FSMContext) -> types.Message | None:
     """
     Хендлер для получения текста нового поста
     :param message:

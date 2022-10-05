@@ -8,16 +8,16 @@ import logging
 import os
 import pathlib
 
-from aiogram import Dispatcher, Bot, Router
+from aiogram import Dispatcher, Bot
 from aiogram.dispatcher.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
+from aioredis import Redis
 from sqlalchemy.engine import URL  # type: ignore
 
 from bot.db import create_async_engine, get_session_maker
 from bot.handlers import register_user_commands
 from bot.handlers.bot_commands import bot_commands
 from bot.middlewares.register_check import RegisterCheck
-from bot.misc import redis
 
 
 async def bot_start(logger: logging.Logger) -> None:
@@ -28,12 +28,11 @@ async def bot_start(logger: logging.Logger) -> None:
     for cmd in bot_commands:
         commands_for_bot.append(BotCommand(command=cmd[0], description=cmd[1]))
 
+    redis = Redis()
+
     dp = Dispatcher(storage=RedisStorage(redis=redis))
     dp.message.middleware(RegisterCheck())
     dp.callback_query.middleware(RegisterCheck())
-
-    router = Router()
-    dp.update.bind_filter()
 
     bot = Bot(token=os.getenv('token'), parse_mode='HTML')  # type: ignore
     await bot.set_my_commands(commands=commands_for_bot)

@@ -19,7 +19,6 @@ class Channel(Base, Model):
     # Cтатистика
     subs_count = Column(Integer, nullable=False)
 
-
     def __str__(self) -> str:
         return f"<User:{self.user_id}>"
 

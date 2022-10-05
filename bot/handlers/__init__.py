@@ -1,3 +1,5 @@
+#  Copyright (c) 2022.
+
 from aiogram import F
 from aiogram import Router
 from aiogram.dispatcher.filters import Command
