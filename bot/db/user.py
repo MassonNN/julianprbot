@@ -4,7 +4,7 @@
 #  Copyright (c) 2022.
 
 from aioredis import Redis
-from sqlalchemy import Column, Integer, VARCHAR, select, BigInteger  # type: ignore
+from sqlalchemy import Column, Integer, VARCHAR, select, BigInteger, Enum  # type: ignore
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import sessionmaker, relationship, selectinload  # type: ignore
 
@@ -22,6 +22,7 @@ class User(Base, Model):
     username = Column(VARCHAR(32), unique=False, nullable=True)
     # EUR
     balance = Column(Integer, default=0)
+    locale = Column(VARCHAR(2), default='ru')
     posts = relationship('Post', back_populates="author", lazy=False)
 
     @property
@@ -56,7 +57,7 @@ async def get_user(user_id: int, session_maker: sessionmaker) -> User:
             return result.scalars().one()
 
 
-async def create_user(user_id: int, username: str, session_maker: sessionmaker) -> None:
+async def create_user(user_id: int, username: str, locale: str, session_maker: sessionmaker) -> None:
     async with session_maker() as session:
         async with session.begin():
             user = User(

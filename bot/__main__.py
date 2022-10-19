@@ -9,8 +9,9 @@ import os
 import pathlib
 
 from aiogram import Dispatcher, Bot
-from aiogram.dispatcher.fsm.storage.redis import RedisStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.types import BotCommand
+from aiogram.utils.i18n import I18n, ConstI18nMiddleware
 from aioredis import Redis
 from sqlalchemy.engine import URL  # type: ignore
 
@@ -18,6 +19,7 @@ from bot.db import create_async_engine, get_session_maker
 from bot.handlers import register_user_commands
 from bot.handlers.bot_commands import bot_commands
 from bot.middlewares.register_check import RegisterCheck
+from bot.utils import WORKDIR
 
 
 async def bot_start(logger: logging.Logger) -> None:
@@ -29,6 +31,9 @@ async def bot_start(logger: logging.Logger) -> None:
         commands_for_bot.append(BotCommand(command=cmd[0], description=cmd[1]))
 
     redis = Redis()
+
+    i18n = I18n(path=WORKDIR / 'locales', default_locale='ru', domain='messages')
+    i18n_middleware = ConstI18nMiddleware(i18n=i18n, locale='ru')
 
     dp = Dispatcher(storage=RedisStorage(redis=redis))
     dp.message.middleware(RegisterCheck())

@@ -1,7 +1,7 @@
 #  Copyright (c) 2022.
 
 from aiogram import types
-from aiogram.dispatcher.fsm.context import FSMContext
+from aiogram.fsm.context import FSMContext
 from sqlalchemy.orm import sessionmaker
 
 from bot.db import PRType
@@ -19,7 +19,7 @@ async def menu_posts_create(call: types.CallbackQuery, state: FSMContext) -> Non
     :param call:
     """
     await state.set_state(PostStates.waiting_for_text)
-    await call.message.answer('Отправь текст нового поста', reply_markup=CANCEL_BOARD)
+    await call.message.answer('Пришли мне текст поста', reply_markup=CANCEL_BOARD)
 
 
 async def menu_posts_create_text(message: types.Message, state: FSMContext) -> types.Message | None:
@@ -101,7 +101,7 @@ async def menu_posts_create_prtype_url(message: types.Message, state: FSMContext
         session_maker=session_maker,
         text=data['post_text'],
         pr_type=PRType(data['pr_type']),
-        author_id = message.from_user.id,
+        author_id=message.from_user.id,
         url_price=price
     )
 

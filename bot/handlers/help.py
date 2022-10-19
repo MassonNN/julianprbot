@@ -1,6 +1,9 @@
 """
     Помощь
 """
+
+#  Copyright (c) 2022.
+
 from aiogram import types
 from aiogram.dispatcher.filters import CommandObject
 

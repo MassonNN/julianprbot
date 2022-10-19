@@ -1,4 +1,7 @@
+#  Copyright (c) 2022.
+
 from aiogram import types
+from aiogram.utils.i18n import gettext as _
 from sqlalchemy.orm import sessionmaker
 
 from bot.db import Post
@@ -17,6 +20,6 @@ async def menu_posts_get(call: types.CallbackQuery, callback_data: PostCD, sessi
 
     post: Post = await get_post(post_id=callback_data.post_id, session_maker=session_maker)
     await call.message.edit_text(
-        f"<b>Пост</b>\n\n{post.text}\n\n<s>---</s>\n\n{post.stats}",
+        _("<b>Пост</b>\n\n{text}\n\n<s>---</s>\n\n{stats}").format(text=post.text, stats=post.stats),
         reply_markup=POSTS_EDIT_BOARD
     )

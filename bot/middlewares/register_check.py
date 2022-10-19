@@ -1,3 +1,5 @@
+#  Copyright (c) 2022.
+
 from typing import Callable, Dict, Any, Awaitable, Union
 
 from aiogram import BaseMiddleware
@@ -26,10 +28,12 @@ class RegisterCheck(BaseMiddleware):
     ) -> Any:
         """ Сама функция для обработки вызова """
         session_maker = data['session_maker']
+        redis = data['redis']
+        user = event.from_user
         # Получаем менеджер сессий из ключевых аргументов, переданных в start_polling()
-        if not await is_user_exists(user_id=event.from_user.id, session_maker=session_maker):
+        if not await is_user_exists(user_id=event.from_user.id, session_maker=session_maker, redis=redis):
             await create_user(user_id=event.from_user.id,
-                              username=event.from_user.username, session_maker=session_maker)
+                              username=event.from_user.username, session_maker=session_maker, locale=user.language_code)
             await data['bot'].send_message(event.from_user.id, 'Ты успешно зарегистрирован(а)!')
 
         return await handler(event, data)
