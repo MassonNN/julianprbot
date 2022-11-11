@@ -1,6 +1,3 @@
-"""
-    Файл запуска
-"""
 #  Copyright (c) 2022.
 
 import asyncio
@@ -23,14 +20,17 @@ from bot.utils import WORKDIR
 
 
 async def bot_start(logger: logging.Logger) -> None:
-    """Запуск бота"""
     logging.basicConfig(level=logging.DEBUG)
 
     commands_for_bot = []
     for cmd in bot_commands:
         commands_for_bot.append(BotCommand(command=cmd[0], description=cmd[1]))
 
-    redis = Redis()
+    redis = Redis(
+        host=os.getenv('REDIS_HOST') or '127.0.0.1',
+        password=os.getenv('REDIS_PASSWORD') or None,
+        username=os.getenv('REDIS_USER') or None,
+    )
 
     i18n = I18n(path=WORKDIR / 'locales', default_locale='ru', domain='messages')
     i18n_middleware = ConstI18nMiddleware(i18n=i18n, locale='ru')
@@ -39,18 +39,20 @@ async def bot_start(logger: logging.Logger) -> None:
     dp.message.middleware(RegisterCheck())
     dp.callback_query.middleware(RegisterCheck())
 
+    i18n_middleware.setup(dp)
+
     bot = Bot(token=os.getenv('token'), parse_mode='HTML')  # type: ignore
     await bot.set_my_commands(commands=commands_for_bot)
     register_user_commands(dp)
 
     postgres_url = URL.create(
         "postgresql+asyncpg",
-        username=os.getenv("db_user"),
-        host="localhost",
-        database=os.getenv("db_name"),
-        port=os.getenv("db_port")
+        username=os.getenv("POSTGRES_USER"),
+        host=os.getenv('POSTGRES_HOST'),
+        database=os.getenv("POSTGRES_DB"),
+        port=int(os.getenv("POSTGRES_PORT") or 0),
+        password=os.getenv('POSTGRES_PASSWORD')
     )
-
     async_engine = create_async_engine(postgres_url)
     session_maker = get_session_maker(async_engine)
 

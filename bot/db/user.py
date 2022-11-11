@@ -3,7 +3,7 @@
 """
 #  Copyright (c) 2022.
 
-from aioredis import Redis
+from redis.asyncio.client import Redis
 from sqlalchemy import Column, Integer, VARCHAR, select, BigInteger, Enum  # type: ignore
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm import sessionmaker, relationship, selectinload  # type: ignore

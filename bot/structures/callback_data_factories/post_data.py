@@ -1,9 +1,11 @@
 """
     Callback data для постов
 """
+#  Copyright (c) 2022.
+
 import enum
 
-from aiogram.dispatcher.filters.callback_data import CallbackData
+from aiogram.filters.callback_data import CallbackData
 
 
 class PostCDAction(enum.IntEnum):

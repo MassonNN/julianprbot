@@ -1,11 +1,13 @@
 """
     Базовые классы базы данных
 """
+#  Copyright (c) 2022.
+
 from abc import abstractmethod
 from datetime import date, timedelta, datetime as dt
+
 from sqlalchemy import Column, DateTime  # type: ignore
 from sqlalchemy.ext.declarative import declarative_base  # type: ignore
-
 
 Base = declarative_base()
 
@@ -23,7 +25,7 @@ class CleanModel:
         Получить время, которое модель не обновлялась
         :return: timedelta
         """
-        return self.upd_date - dt.now()
+        return self.upd_date - dt.now()  # type: ignore
 
 
 class Model(CleanModel):

@@ -1,4 +1,6 @@
-from aiogram.dispatcher.fsm.state import StatesGroup, State
+#  Copyright (c) 2022.
+
+from aiogram.fsm.state import StatesGroup, State
 
 
 class PostStates(StatesGroup):

@@ -1,6 +1,8 @@
+#  Copyright (c) 2022.
+
 from datetime import datetime
 
-from aiogram.dispatcher.filters.callback_data import CallbackData
+from aiogram.filters.callback_data import CallbackData
 from aiogram.types import User, Chat, Message, CallbackQuery, Update
 from alembic.command import upgrade, downgrade
 
