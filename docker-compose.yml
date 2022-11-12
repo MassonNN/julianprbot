@@ -1,14 +1,5 @@
 version: '3.7'
 services:
-  bot:
-    build: .
-    command: sh -c "make migrate && python -m bot"
-    env_file:
-      - ./.env
-    restart: always
-    depends_on:
-      - db
-      - redis
   redis:
     image: redis:alpine
     command:
@@ -27,6 +18,15 @@ services:
     restart: on-failure
     ports:
       - "5432:5432"
+  bot:
+    build: .
+    command: sh -c "make migrate && python -m bot"
+    env_file:
+      - ./.env
+    restart: always
+    depends_on:
+      - redis
+      - db
 
 volumes:
   pgdata:
