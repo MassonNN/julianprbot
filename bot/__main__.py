@@ -20,7 +20,7 @@ from bot.utils import WORKDIR
 
 
 async def bot_start(logger: logging.Logger) -> None:
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.WARNING)
 
     commands_for_bot = []
     for cmd in bot_commands:

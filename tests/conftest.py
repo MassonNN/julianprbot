@@ -1,9 +1,11 @@
+#  Copyright (c) 2022.
+
 import asyncio
 
 import pytest
 import pytest_asyncio
 from aiogram import Dispatcher, Bot
-from aiogram.dispatcher.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.memory import MemoryStorage
 from alembic.config import Config
 from alembic.script import ScriptDirectory
 from sqlalchemy.engine import URL
