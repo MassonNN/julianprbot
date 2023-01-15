@@ -8,7 +8,7 @@ services:
       - ./.env
     restart: on-failure
     ports:
-      - "6379:6379"
+      - "6378:6378"
   db:
     image: postgres:14-alpine
     env_file:
@@ -17,7 +17,7 @@ services:
       - pgdata:/var/lib/postgresql/data
     restart: on-failure
     ports:
-      - "5432:5432"
+      - "5433:5433"
   bot:
     build: .
     command: sh -c "make migrate && python -m bot"
@@ -27,7 +27,6 @@ services:
     depends_on:
       - db
       - redis
-
 
 
 volumes:

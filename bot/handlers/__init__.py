@@ -19,6 +19,7 @@ from bot.handlers.start import (
     menu_channels,
     PostStates, call_start
 )
+from bot.handlers.web_app_data import web_app_data_receive
 from bot.structures.callback_data_factories import PostCD, PostCDAction
 
 __all__ = ('register_user_commands', 'bot_commands', 'register_user_handlers',)
@@ -33,7 +34,7 @@ def register_user_commands(router: Router) -> None:
     router.message.register(help_command, Command(commands=['help']))
     router.message.register(start, F.text == __('Старт'))
     router.message.register(menu_posts, F.text == __('Твои посты'))
-    router.message.register(menu_account, F.text == __('Аккаунт'), F.content_type == [ContentType.CONTACT, ])
+    router.message.register(menu_account, F.text == __('Аккаунт'))
     router.message.register(menu_channels, F.text == __('Твои каналы'))
     router.message.register(menu_posts_create_text, PostStates.waiting_for_text)
     router.message.register(menu_posts_create_subs_min, PostStates.waiting_for_post_subs_min)
@@ -43,6 +44,7 @@ def register_user_commands(router: Router) -> None:
     router.message.register(menu_posts_create_url,
                             PostStates.waiting_for_url)
     router.message.register(help_func, F.text == __('Помощь'))
+    router.message.register(web_app_data_receive, F.content_type.in_(ContentType.WEB_APP_DATA, ))
 
     router.callback_query.register(call_help_func, F.data == 'help', any_state)
     router.callback_query.register(call_start, F.data == 'menu', any_state)

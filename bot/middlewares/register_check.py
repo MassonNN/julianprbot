@@ -27,9 +27,13 @@ class RegisterCheck(BaseMiddleware):
         data: Dict[str, Any]
     ) -> Any:
         """ Сама функция для обработки вызова """
+        if event.web_app_data:
+            return await handler(event, data)
+
         session_maker = data['session_maker']
         redis = data['redis']
         user = event.from_user
+
         # Получаем менеджер сессий из ключевых аргументов, переданных в start_polling()
         if not await is_user_exists(user_id=event.from_user.id, session_maker=session_maker, redis=redis):
             await create_user(user_id=event.from_user.id,

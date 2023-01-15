@@ -7,7 +7,7 @@ import pathlib
 
 from aiogram import Dispatcher, Bot
 from aiogram.fsm.storage.redis import RedisStorage
-from aiogram.types import BotCommand
+from aiogram.types import BotCommand, WebAppInfo, MenuButtonWebApp
 from aiogram.utils.i18n import I18n, ConstI18nMiddleware
 from aioredis import Redis
 from sqlalchemy.engine import URL  # type: ignore
@@ -20,7 +20,7 @@ from bot.utils import WORKDIR
 
 
 async def bot_start(logger: logging.Logger) -> None:
-    logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(level=logging.DEBUG)
 
     commands_for_bot = []
     for cmd in bot_commands:
